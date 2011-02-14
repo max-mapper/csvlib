@@ -21,16 +21,37 @@
 
       $('#testOutput').html(Mustache.to_html($('#testTemplate').text(), d)); 
     }
+    
+    function jsonParty() {
+      var jsonData = JSON.parse($('#json').val()),
+      header = csv.buildHeaders(jsonData),
+      row = csv.buildRow(jsonData);
+
+      var d = {
+        header: header,
+        row: row
+      }
+
+      $('#jsonOutput').html(Mustache.to_html($('#jsonTemplate').text(), d)); 
+     
+    }
   
     $(function() {
       $('#csv').keydown(function() {
         window.setTimeout(csvParty, 100, true);
       });
+      
+      $('#json').keydown(function() {
+        window.setTimeout(jsonParty, 100, true);
+      });
+      
       csvParty();
+      jsonParty();
     })
   </script>
 </head>
 <body>
+<h3>CSV Parsing:</h3>
 <textarea style="width: 400px; height: 100px" id="csv">
 name,startTime,endTime,latitude,longitude
 hill house,,,42,-72
@@ -38,6 +59,34 @@ old church,,,42,-72.72
 jon hill,,,43,-72
 blue hill,,,42.542,-73
 </textarea>
+
+<div id="testOutput"></div>
+<h3>JSON -> CSV:</h1>
+<textarea style="width: 400px; height: 300px" id="json">
+  {
+      "type": "FeatureCollection",
+      "features": [
+          {
+              "type": "Feature",
+              "properties": {
+                  "capacity": "10",
+                  "type": "U-Rack",
+                  "mount": "Surface"
+              },
+              "geometry": {
+                  "type": "Point",
+                  "coordinates": [
+                      -71.073283,
+                      42.4175
+                  ]
+              }
+          }
+      ]
+  }
+</textarea>
+
+<div id="jsonOutput"></div>
+
 <script id="testTemplate" type="text/mustache">
   <p>All rows:</p>
   <pre>
@@ -56,6 +105,17 @@ blue hill,,,42.542,-73
     {{properties}}
   </pre>
 </script>
-<div id="testOutput"></div>
+
+<script id="jsonTemplate" type="text/mustache">
+  <p>Header row:</p>
+  <pre>
+    {{header}}
+  </pre>
+  <p>Data row:</p>
+  <pre>
+    {{row}}
+  </pre>
+</script>
+
 </body>
 </html>

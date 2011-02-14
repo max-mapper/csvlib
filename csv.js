@@ -23,15 +23,15 @@
   }
   
   // from http://stackoverflow.com/questions/2210437/flattening-a-complex-json-object-for-mvc-binding
-  csv.flattenJSON = function(json){
+  csv.flattenJSON = function(json) {
     var nj = {},
-      walk = function(j){
+      walk = function(j) {
         var jp;
-        for(var prop in j){
+        for(var prop in j) {
           jp = j[prop];
           if(jp.toString() === "[object Object]"){
             walk(jp);
-          }else{
+          } else {
             nj[prop] = jp;
           }
         }
@@ -46,7 +46,7 @@
     for (var key in flatRow) {
       keys.push(key);
     }
-    return keys.join(',') + sep;
+    return keys.join(',') + "\n";
   }
   
   csv.buildRow = function(json) {
@@ -55,7 +55,7 @@
     for (var key in flatRow) {
       keys.push(flatRow[key]);
     }
-    return keys.join(',') + sep;
+    return keys.join(',') + "\n";
   }
 
 })();
