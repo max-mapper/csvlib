@@ -5,35 +5,40 @@
   <script src="https://github.com/janl/mustache.js/raw/master/mustache.js" type="text/javascript"></script> 
   <script src="csv.js" type="text/javascript"></script> 
   <script type="text/javascript">
-    $(function() {
-      var csvData = $('#csv').text(),
+    function csvParty() {
+      var csvData = $('#csv').val(),
       rows = csv.rows(csvData),
       header = csv.header(rows),
       data = csv.data(rows),
       properties = csv.properties(header);
 
       var d = {
-        csvData: csvData,
         rows: JSON.stringify(rows),
         header: JSON.stringify(header),
         data: JSON.stringify(data),
         properties: JSON.stringify(properties)
       }
-      
-      $('#testOutput').html(Mustache.to_html($('#testTemplate').text(), d))
-      
+
+      $('#testOutput').html(Mustache.to_html($('#testTemplate').text(), d)); 
+    }
+  
+    $(function() {
+      $('#csv').keydown(function() {
+        window.setTimeout(csvParty, 100, true);
+      });
+      csvParty();
     })
   </script>
 </head>
 <body>
-<script id="csv" type="text/x-csv">name,startTime,endTime,latitude,longitude
+<textarea style="width: 400px; height: 100px" id="csv">
+name,startTime,endTime,latitude,longitude
 hill house,,,42,-72
 old church,,,42,-72.72
 jon hill,,,43,-72
-blue hill,,,42.542,-73</script>
+blue hill,,,42.542,-73
+</textarea>
 <script id="testTemplate" type="text/mustache">
-  <p>Original data:</p>
-  <pre>{{csvData}}</pre>
   <p>All rows:</p>
   <pre>
     {{rows}}
