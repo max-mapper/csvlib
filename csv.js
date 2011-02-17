@@ -15,17 +15,17 @@
   }
   
   csv.header = function( data ) {
-    if ( data.search('\n') ) {
+    if ( data.length !== "undefined" ) {
 
-        return this.rows( data )[0]
+      return data[0];
+        
+    } else if ( typeof(data) === "string" && data.indexOf('\n') !== -1 ) {
 
-    } else if ( typeof data == 'array' ) {
-
-        return rows[0];
+      return csv.rows( data )[0];
 
     } else {
         
-        return this
+      return this
         
     }
   }
