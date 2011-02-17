@@ -29,7 +29,9 @@
         var jp;
         for(var prop in j) {
           jp = j[prop];
-          if(jp.toString() === "[object Object]"){
+          if(jp.length !== "undefined") {
+            nj[prop] = JSON.stringify(jp);
+          } else if(jp.toString() === "[object Object]"){
             walk(jp);
           } else {
             nj[prop] = jp;

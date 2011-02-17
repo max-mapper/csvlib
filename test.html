@@ -24,16 +24,21 @@
     
     function jsonParty() {
       var jsonData = JSON.parse($('#json').val()),
-      header = csv.buildHeaders(jsonData),
-      row = csv.buildRow(jsonData);
-
+      header = false,
+      row = csv.buildRow(jsonData[1]);
+      var rows = [];
+      for (var n in jsonData) {
+        if (!header) {
+          header = csv.buildHeaders(jsonData[n]);
+        }
+        rows.push(csv.buildRow(jsonData[n]));
+      }
       var d = {
         header: header,
-        row: row
+        rows: rows
       }
-
-      $('#jsonOutput').html(Mustache.to_html($('#jsonTemplate').text(), d)); 
-     
+      
+      $('#jsonOutput').html(Mustache.to_html($('#jsonTemplate').text(), d));
     }
   
     $(function() {
@@ -64,24 +69,25 @@ blue hill,,,42.542,-73
 <h3>JSON -> CSV:</h1>
 <textarea style="width: 400px; height: 300px" id="json">
   {
-      "type": "FeatureCollection",
-      "features": [
-          {
-              "type": "Feature",
-              "properties": {
-                  "capacity": "10",
-                  "type": "U-Rack",
-                  "mount": "Surface"
-              },
-              "geometry": {
-                  "type": "Point",
-                  "coordinates": [
-                      -71.073283,
-                      42.4175
-                  ]
-              }
-          }
-      ]
+      "schools-region": {
+          "uri": "ftp://ftp.oregonmetro.gov/odi/Schools.zip",
+          "files": ["schools"],
+          "geoms": ["POINT"],
+          "types": ["shp"],
+          "headers": ["pkuid", "geometry", "name", "address", "city", "state", "zipcode", "zip4", "phone", "dist_no", "district", "level_no", "level", "grade", "type"]
+      },
+      "transit-district-poly": {
+          "uri": "ftp://ftp.oregonmetro.gov/odi/TransitDistrict.zip",
+          "files": ["transit_district.shp"],
+          "types": ["shp"],
+          "headers": ["pkuid", "geometry", "tran_dist", "area"]
+      },
+      "leaf-pickup": {
+          "uri": "http://www.portlandonline.com/shared/file/data/Leaf_Pickup_pdx.zip",
+          "files": ["PortlandLeafPickup\\Leaf_Pickup_pdx.shp"],
+          "types": ["shp"],
+          "headers": ["pkuid", "geometry", "assets_pdo", "route_pri_", "dist", "milage"]
+      }
   }
 </textarea>
 
@@ -107,13 +113,10 @@ blue hill,,,42.542,-73
 </script>
 
 <script id="jsonTemplate" type="text/mustache">
-  <p>Header row:</p>
+  <p>CSV output:</p>
   <pre>
-    {{header}}
-  </pre>
-  <p>Data row:</p>
-  <pre>
-    {{row}}
+{{header}}{{#rows}}
+{{.}}{{/rows}}
   </pre>
 </script>
 
